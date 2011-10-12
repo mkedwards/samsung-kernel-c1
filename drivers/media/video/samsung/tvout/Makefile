@@ -9,7 +9,7 @@ ifeq ($(CONFIG_VIDEO_TVOUT_DEBUG), y)
 EXTRA_CFLAGS += -DDEBUG
 endif
 ifeq ($(CONFIG_VIDEO_UMP),y)
-    EXTRA_CFLAGS += -I$(KBUILD_SRC)/drivers/media/video/samsung/ump/include
+    EXTRA_CFLAGS += -I$(srctree)/drivers/media/video/samsung/ump/include
 endif
 
 override obj-dirs = $(dir $(obj)) $(obj)/hw_if/

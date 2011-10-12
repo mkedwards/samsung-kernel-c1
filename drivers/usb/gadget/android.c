@@ -170,6 +170,7 @@ static bool are_functions_registered(struct android_dev *dev)
 	int i;
 
 #ifdef CONFIG_USB_ANDROID_SAMSUNG_COMPOSITE /* soonyong.cho : Just review bind functions */
+	struct android_usb_function	*f;
 	list_for_each_entry(f, &_functions, list) {
 		CSY_DBG("functions->name=%s\n", f->name);
 	}

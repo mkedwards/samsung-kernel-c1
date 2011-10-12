@@ -10,8 +10,8 @@
 
 OSKOS :=linux
 FILES_PREFIX=
-MALI_FILE_PREFIX = $(KBUILD_SRC)/drivers/media/video/samsung/mali
-KBUILDROOT = $(KBUILD_OUTPUT)
+MALI_FILE_PREFIX = $(srctree)/drivers/media/video/samsung/mali
+KBUILDROOT = $(objtree)
 
 ifeq ($(CONFIG_MALI_DED_ONLY),y)
 USING_OS_MEMORY=0
@@ -82,7 +82,7 @@ ifeq ($(USING_OS_MEMORY),1)
         USING_MMU = 1
 endif
 # Check if a Mali Core sub module should be enabled, true or false returned
-submodule_enabled = $(shell set -x ; echo $(KBUILD_SRC) 1>&2; gcc $(DEFINES) -E $(MALI_FILE_PREFIX)/arch/config.h | grep type | grep -c $(2))
+submodule_enabled = $(shell set -x ; echo $(srctree) 1>&2; gcc $(DEFINES) -E $(MALI_FILE_PREFIX)/arch/config.h | grep type | grep -c $(2))
 
 # Inside the kernel build system
 
@@ -131,8 +131,8 @@ obj-$(CONFIG_VIDEO_MALI400MP)		+= mali.o
 # Use our defines when compiling
 # MALI
 INCLUDES = \
-        -I$(KBUILD_SRC) \
-        -I$(KBUILD_OUTPUT) \
+        -I$(srctree) \
+        -I$(objtree) \
 		-I$(MALI_FILE_PREFIX)\
 		-I$(MALI_FILE_PREFIX)/platform\
 		-I$(MALI_FILE_PREFIX)/common \
@@ -183,21 +183,21 @@ UKKFILES=\
         $(FILES_PREFIX)$(OSKOS)/mali_ukk_core.o
 
 mali-y := \
-	$(KBUILDROOT)common/mali_kernel_core.o \
-	$(KBUILDROOT)linux/mali_kernel_linux.o \
-	$(KBUILDROOT)linux/mali_osk_indir_mmap.o \
-	$(KBUILDROOT)common/mali_kernel_rendercore.o \
-	$(KBUILDROOT)common/mali_kernel_descriptor_mapping.o \
-	$(KBUILDROOT)$(MALI_PLATFORM_FILE) \
-	$(KBUILDROOT)$(OSKFILES) \
-	$(KBUILDROOT)$(UKKFILES) 
+	$(FILES_PREFIX)common/mali_kernel_core.o \
+	$(FILES_PREFIX)linux/mali_kernel_linux.o \
+	$(FILES_PREFIX)linux/mali_osk_indir_mmap.o \
+	$(FILES_PREFIX)common/mali_kernel_rendercore.o \
+	$(FILES_PREFIX)common/mali_kernel_descriptor_mapping.o \
+	$(FILES_PREFIX)$(MALI_PLATFORM_FILE) \
+	$(FILES_PREFIX)$(OSKFILES) \
+	$(FILES_PREFIX)$(UKKFILES) 
 	#__malidrv_build_info.o
 
 ifeq ($(USING_PROFILING),1)
 mali-y += \
 	common/mali_kernel_profiling.o \
 	timestamp-$(TIMESTAMP)/mali_timestamp.o
-EXTRA_CFLAGS += -I$(KBUILD_EXTMOD)/timestamp-$(TIMESTAMP)
+EXTRA_CFLAGS += -I$(VPATH)/timestamp-$(TIMESTAMP)
 endif
 
 # Selecting files to compile by parsing the config file
